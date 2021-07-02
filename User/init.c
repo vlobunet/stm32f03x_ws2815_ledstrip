@@ -152,7 +152,8 @@ void F4030C8_Setup(void) {
 	USART_GPIO_Init();
 	USART_Init_User();
 	
-	SysTick_Config(SystemCoreClock / 20000);
+	if (SysTick_Config(SystemCoreClock / 1000) != 0)
+        LEDstatus = STATUS_ERROR;
 	GPIO_SetBits(GPIOA, GPIO_Pin_1 );		
 	GPIO_SetBits(GPIOA, GPIO_Pin_12);
 

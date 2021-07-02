@@ -49,7 +49,7 @@
 	#define INP_2_READ() GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_6)
 	#define INP_3_READ() GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_7)
 	
-	#define TIM_PRESCALER 30
+	#define TIM_PRESCALER 1000
 	#define TIM_PERIOD 1000
     
     typedef struct {
@@ -73,6 +73,23 @@
     
     extern t_color sColor;
     extern t_color eColor;
+    
+    #define DIVIDER 5000
+    typedef enum {
+        STATUS_STANDBY = 0,
+        STATUS_BLOCK,
+        STATUS_ACTIV,
+        STATUS_ERROR,
+        STATUS_RED_to_BLU,
+        STATUS_RED_to_GRN,
+        STATUS_GRN_to_RED,
+        STATUS_GRN_to_BLU,
+        STATUS_BLU_to_GRN,
+        STATUS_BLU_to_RED
+    }e_status;
+    
+    extern e_status LEDstatus;
+   
     void F4030C8_Setup(void);
 	void Fill_In_The_DMA_Bufer(uint16_t* USART_TX_Bufer, uint32_t* Input_Colour_Bufer, uint16_t n);
 	void DMA1_Channel4_5_IRQHandler(void);

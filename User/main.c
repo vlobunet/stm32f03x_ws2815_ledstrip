@@ -15,11 +15,17 @@ uint8_t flagIsNewCircle = 0;
 
 t_color Color;
 
-t_color sColor = {0x00, 0x00, 0x20, 0x00};
+t_color sColor = {0x00, 0x00, 0x8, 0x00};
 t_color eColor = {0x00, 0xff, 0xff, 0x00};
+volatile uint8_t status_strip = 0;
 
+
+
+e_status LEDstatus = STATUS_BLU_to_GRN;
+volatile uint32_t counter = 0;
 void SysTick_Handler(void) {
-    
+    /*if(counter >= DIVIDER) LEDstatus = (LEDstatus + 1) % 10;
+    counter = (counter + 1) & DIVIDER;*/
 }
 
 void SetPanelColor(uint32_t color, int n) {
@@ -70,16 +76,20 @@ void setArrayPixel(int headPos, int step) {
     SetPanelColor(0, i);
 }
 
-void TIM16_IRQHandler(void) {
-    /*static int isIncrement = 0;
+void active_effect(void) {
+    static int isIncrement = 0;
     if (isIncrement == 0)
             HeadPosition = (HeadPosition + 1) % (SIZE_STRIP + SIZE_TAIL);
     if (HeadPosition == SIZE_STRIP + SIZE_TAIL - 1)
                 flagIsNewCircle = 1;
     if (HeadPosition == 0 && flagIsNewCircle == 1) HeadPosition = SIZE_TAIL;
     setArrayPixel(HeadPosition, isIncrement);
-    isIncrement = (isIncrement + 1) % (SIZEE_STEP + 1);*/
-    // BRG
+    isIncrement = (isIncrement + 1) % (SIZEE_STEP + 1);
+}
+
+void TIM16_IRQHandler(void) {
+    
+
     showStrip();
     TIM16->SR = (uint16_t)~TIM_IT_Update;
 }
@@ -120,6 +130,19 @@ int main(void) {
     SetArray(-1);
     /********************************************************/
 	while (1) {
+        switch (LEDstatus) {
+            case STATUS_STANDBY:    setSendBufferArray(-1, sColor, eColor);     break;
+            case STATUS_ACTIV:      active_effect();                            break;
+            case STATUS_BLOCK:      Strobe(0xff, 0xff, 0xff, 10, 20, 500);      break;
+            case STATUS_ERROR:      AlarmFadeInOut(0xff, 0x00, 0x00, 4);        break;
+            case STATUS_BLU_to_GRN: meteorRain(0xff,0xff,0xff, 2, 127, 1, 20);  break;
+            case STATUS_BLU_to_RED: theaterChaseRainbow(2000);                  break;
+            case STATUS_GRN_to_BLU: rainbowCycle(1000);                         break;
+            case STATUS_GRN_to_RED: RunningLights(0,0,0xff, 20);                break;
+            case STATUS_RED_to_BLU: RGBLoop();                                  break;
+            case STATUS_RED_to_GRN: colorWipe(random(255), random(255), random(255), 10); break;
+            default: break;
+        }
 		//AlarmFadeInOut(0xff, 0x00, 0x00, 4);
 		//StandBy(0x00, 0, 0xff, 10, 100, 0);
 		/*****************************************************/
@@ -150,6 +173,5 @@ int main(void) {
 		/*****************************************************/
 		// meteorRain(0xff,0xff,0xff, 2, 127, 1, 10);
 		/*****************************************************/
-        setSendBufferArray(-1, sColor, eColor);
 	}	
 }

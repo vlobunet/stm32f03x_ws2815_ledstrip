@@ -432,6 +432,16 @@
               <FileType>1</FileType>
               <FilePath>.\User\MyEffect.c</FilePath>
             </File>
+            <File>
+              <FileName>random.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LIB\src\random.c</FilePath>
+            </File>
+            <File>
+              <FileName>random.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LIB\inc\random.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

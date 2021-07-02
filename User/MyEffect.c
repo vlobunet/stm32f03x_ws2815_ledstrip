@@ -1,6 +1,6 @@
 #include "PCB705.h"
 
-#define MAX_pixel 8
+#define MAX_pixel 10
 float set[MAX_pixel][4];
 
 #define POSITION 0
@@ -20,7 +20,7 @@ void FirstSetArray(int i) {
   while (++i < MAX_pixel)
     set[i][POSITION] = SIZE_STRIP + 1;
   i = -1;
-  while (++i < SIZE_STRIP)
+  while (++i < SIZE_STRIP / 2)
     SendBuffer[i] = sColor.red << 16 | sColor.green << 8 | sColor.blue;
 }
 
